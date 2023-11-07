@@ -1,48 +1,27 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'book.g.dart';
+
+@JsonSerializable(fieldRename: FieldRename.snake)
 class Book {
-  int id;
-  String title;
-  String author;
-  String genre;
-  String description;
-  String isbn;
-  String image;
-  DateTime published;
-  String publisher;
+  int? id;
+  String? title;
+  String? author;
+  dynamic publicationYear;
+  List<String>? genre;
+  String? description;
+  String? coverImage;
 
   Book({
-    required this.id,
-    required this.title,
-    required this.author,
-    required this.genre,
-    required this.description,
-    required this.isbn,
-    required this.image,
-    required this.published,
-    required this.publisher,
+    this.id,
+    this.title,
+    this.author,
+    this.publicationYear,
+    this.genre,
+    this.description,
+    this.coverImage,
   });
 
-  factory Book.fromJson(Map<String, dynamic> json) => Book(
-        id: json["id"],
-        title: json["title"],
-        author: json["author"],
-        genre: json["genre"],
-        description: json["description"],
-        isbn: json["isbn"],
-        image: json["image"],
-        published: DateTime.parse(json["published"]),
-        publisher: json["publisher"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "title": title,
-        "author": author,
-        "genre": genre,
-        "description": description,
-        "isbn": isbn,
-        "image": image,
-        "published":
-            "${published.year.toString().padLeft(4, '0')}-${published.month.toString().padLeft(2, '0')}-${published.day.toString().padLeft(2, '0')}",
-        "publisher": publisher,
-      };
+  factory Book.fromJson(Map<String, dynamic> json) => _$BookFromJson(json);
+  Map<String, dynamic> toJson() => _$BookToJson(this);
 }
