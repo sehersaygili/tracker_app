@@ -59,7 +59,7 @@ class AppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(top: 120, left: 25, right: 20),
-      height: 150,
+      height: AppConstants.kAppBarHeight,
       width: double.infinity,
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.only(
@@ -67,7 +67,7 @@ class AppBar extends StatelessWidget {
           bottomRight: Radius.circular(30),
         ),
         gradient: LinearGradient(
-          colors: [kPrimaryColor, kPrimaryLight],
+          colors: [AppColors.kPrimaryColor, AppColors.kPrimaryLight],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -111,12 +111,17 @@ class BooksCardsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 5, right: 5),
+      padding: const EdgeInsets.only(
+        left: 20,
+        bottom: 30,
+        right: 20,
+      ),
       child: GridView.builder(
+        padding: const EdgeInsets.all(10),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 1,
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
+          mainAxisSpacing: 1,
+          crossAxisSpacing: 4,
         ),
         itemCount: books.length,
         itemBuilder: (BuildContext context, int index) {
