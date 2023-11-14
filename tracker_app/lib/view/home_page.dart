@@ -1,11 +1,10 @@
-import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tracker_app/constants/colors.dart';
 import 'package:tracker_app/widgets/books_cards.dart';
 import 'package:tracker_app/models/book.dart';
-import 'package:http/http.dart' as http;
+import 'package:tracker_app/services/api_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,14 +14,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final url = Uri.parse('https://freetestapi.com/api/v1/books');
+  final BookService bookService = BookService();
   List<Book> result = [];
-  Future callBooks() async {
-    try {
-      final response = await http.get(url);
 
-      var jsonList = jsonDecode(response.body);
-      result = (jsonList as List).map((e) => Book.fromJson(e)).toList();
+  Future<void> callBooks() async {
+    try {
+      result = await bookService.getBooks();
     } catch (e) {
       if (kDebugMode) {
         print(e.toString());
@@ -44,7 +41,21 @@ class _HomePageState extends State<HomePage> {
         body: Column(
           children: [
             const AppBar(),
-            Expanded(child: BooksCardsWidget(books: result))
+            Expanded(
+                child: BooksCardsWidget(
+                    books: result,
+                    onFavoriteChanged: (Book book, bool isFavorite) {
+                      // Favori durumu değişikliğini burada işleyin
+                      // Veri kaynağını (örneğin, veritabanını) güncellemek isteyebilirsiniz
+                      setState(() {
+                        // Kitabın listeye olan index'ini bulun
+                        int index = result.indexWhere((b) => b.id == book.id);
+                        if (index != -1) {
+                          // isFavorite durumunu güncelleyin
+                          result[index].isFavorite = isFavorite;
+                        }
+                      });
+                    }))
           ],
         ),
       ),
@@ -63,11 +74,11 @@ class AppBar extends StatelessWidget {
       width: double.infinity,
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(30),
-          bottomRight: Radius.circular(30),
+          bottomLeft: Radius.circular(20),
+          bottomRight: Radius.circular(20),
         ),
         gradient: LinearGradient(
-          colors: [AppColors.kPrimaryColor, AppColors.kPrimaryLight],
+          colors: [Color.fromARGB(255, 241, 74, 14), AppColors.kPrimaryLight],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -81,20 +92,7 @@ class AppBar extends StatelessWidget {
               children: [
                 Text(
                   "Book Tracker",
-                  style: TextStyle(
-                    fontSize: 20, // Metnin font büyüklüğü
-                    fontWeight: FontWeight.w300,
-                    color: Colors.white, // Metnin rengi
-                    shadows: [
-                      Shadow(
-                        color: const Color.fromARGB(255, 28, 26, 26)
-                            .withOpacity(1), // Gölge rengi ve opaklığı
-                        offset:
-                            const Offset(2, 2), // Gölgenin x ve y koordinatları
-                        blurRadius: 2, // Gölgenin bulanıklık yarıçapı
-                      ),
-                    ],
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium,
                 )
               ],
             )
@@ -106,18 +104,17 @@ class AppBar extends StatelessWidget {
 }
 
 class BooksCardsWidget extends StatelessWidget {
-  const BooksCardsWidget({super.key, required this.books});
+  const BooksCardsWidget(
+      {super.key, required this.books, required this.onFavoriteChanged});
   final List<Book> books;
+  final Function(Book book, bool isFavorite) onFavoriteChanged;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
-        left: 20,
-        bottom: 30,
-        right: 20,
-      ),
+      padding: const EdgeInsets.only(left: 20, bottom: 0, right: 20, top: 0),
       child: GridView.builder(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(30),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 1,
           mainAxisSpacing: 1,
@@ -125,7 +122,13 @@ class BooksCardsWidget extends StatelessWidget {
         ),
         itemCount: books.length,
         itemBuilder: (BuildContext context, int index) {
-          return BooksCards(book: books[index]);
+          return BooksCards(
+            book: books[index],
+            isFavorite: true,
+            onFavoriteChanged: (isFavorite) {
+              onFavoriteChanged(books[index], isFavorite);
+            },
+          );
         },
       ),
     );

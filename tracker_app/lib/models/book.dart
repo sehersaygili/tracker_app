@@ -11,6 +11,7 @@ class Book {
   List<String>? genre;
   String? description;
   String? coverImage;
+  bool? isFavorite;
 
   Book({
     this.id,
@@ -20,6 +21,7 @@ class Book {
     this.genre,
     this.description,
     this.coverImage,
+    this.isFavorite = false,
   });
 
   factory Book.fromJson(Map<String, dynamic> json) => _$BookFromJson(json);

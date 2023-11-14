@@ -1,97 +1,106 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/constants/colors.dart';
 import 'package:tracker_app/models/book.dart';
+import 'package:tracker_app/constants/text_styles.dart';
 
 class BooksCards extends StatelessWidget {
   final Book book;
-  const BooksCards({super.key, required this.book});
+  final bool isFavorite;
+  final Function(bool isFavorite) onFavoriteChanged;
+
+  const BooksCards(
+      {super.key,
+      required this.book,
+      required this.isFavorite,
+      required this.onFavoriteChanged});
 
   @override
   Widget build(BuildContext context) {
     Widget imageNetwork() {
-      return Image.network(
-        'https://picsum.photos/id/${book.id}/200/300',
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) => Image.network(
-          'https://picsum.photos/id/${0}/200/300',
+      return Opacity(
+        opacity: 0.3, // Şeffaflık seviyesi (0.0 - 1.0 arasında)
+        child: Image.network(
+          'https://picsum.photos/id/${book.id}/200/300',
           fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => Image.network(
+            'https://picsum.photos/id/${0}/200/300',
+            fit: BoxFit.cover,
+          ),
         ),
       );
     }
 
     return Padding(
-      padding: EdgeInsets.only(bottom: 17.5, top: 17.5),
+      padding: const EdgeInsets.only(
+        bottom: 15.5,
+        top: 65.5,
+      ),
       child: GestureDetector(
-        onTap: () {},
         child: Container(
-          padding: const EdgeInsets.all(3),
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              bottomLeft: Radius.circular(10),
-              bottomRight: Radius.circular(10),
-              topLeft: Radius.circular(10),
-              topRight: Radius.circular(10),
+          padding: const EdgeInsets.only(),
+          decoration: const BoxDecoration(
+            color: AppColors.kShadowColor,
+            gradient: LinearGradient(
+              colors: [AppColors.kBoxColor, AppColors.kBoxColor2],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-            color: Colors.white,
             boxShadow: [
               BoxShadow(
-                  color: Color.fromARGB(255, 255, 123, 0).withOpacity(.69),
+                  color: Color.fromARGB(255, 31, 8, 8),
                   blurRadius: 10.0,
-                  offset: Offset(5, 5))
+                  offset: Offset(10, 10))
             ],
           ),
           child: Stack(
             children: [
               Align(
-                  alignment: Alignment.center,
-                  child: Row(
-                    children: [
-                      Expanded(child: imageNetwork()),
-                    ],
-                  )),
+                alignment: Alignment.center,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: imageNetwork(),
+                    ),
+                  ],
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.only(),
-                child: ListTile(
-                  title: Text(
-                    book.title ?? '',
-                  ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          backgroundColor: AppColors.kPrimaryColor,
-                        ),
-                        "Author: ${book.author ?? ''}",
-                      ),
-                      Text(
-                        "Genre: ${book.genre ?? ''}",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          backgroundColor: AppColors.kPrimaryColor,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 0, right: 90, bottom: 150),
+                        child: IconButton(
+                          icon: Icon(
+                            isFavorite ? Icons.favorite : Icons.favorite_border,
+                            color: Colors.red,
+                            size: 25,
+                          ),
+                          onPressed: () {
+                            onFavoriteChanged(!isFavorite);
+                          },
                         ),
                       ),
-                      Text(
-                        "Publication Year: ${book.publicationYear ?? ''}",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          backgroundColor: AppColors.kPrimaryColor,
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 100),
+                        child: Column(
+                          children: [
+                            StyledTextAppBar(text: book.title ?? ''),
+                            StyledTextAppBar(text: book.author ?? ''),
+                            StyledTextAppBar(text: "${book.genre ?? ''}"),
+                            StyledTextCard(
+                                text: "${book.publicationYear ?? ''}"),
+                            StyledTextCard(text: book.description ?? ''),
+                          ],
                         ),
                       ),
-                      Text(
-                        "Description: ${book.description ?? ''}",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          backgroundColor: AppColors.kPrimaryColor,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ],
