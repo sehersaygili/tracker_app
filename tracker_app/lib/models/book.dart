@@ -27,3 +27,14 @@ class Book {
   factory Book.fromJson(Map<String, dynamic> json) => _$BookFromJson(json);
   Map<String, dynamic> toJson() => _$BookToJson(this);
 }
+
+class BookDataSource {
+  static List<Book> books = [
+    Book(id: 1, title: 'Kitap 1', author: 'Yazar 1'),
+    Book(id: 2, title: 'Kitap 2', author: 'Yazar 2'),
+  ];
+
+  static Book getBookById(int bookId) {
+    return books.firstWhere((book) => book.id == bookId);
+  }
+}

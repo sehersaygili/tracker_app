@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:tracker_app/models/favorite_book.dart';
 
 class MyWidget extends StatelessWidget {
   const MyWidget({super.key});
@@ -34,9 +32,6 @@ class MyWidget extends StatelessWidget {
 class _FavoritePageList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var itemNameStyle = Theme.of(context).textTheme.headlineMedium;
-    var favoritepage = context.watch<FavoritePageModel>();
-
     return ListView.builder(
       itemCount: 1,
       itemBuilder: (context, index) => ListTile(

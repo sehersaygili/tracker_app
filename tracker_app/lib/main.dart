@@ -38,12 +38,20 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Book Tracker',
         theme: AppThemes.getAppTheme(), //temayı ayrı sayfadan çağırdım
-        initialRoute: '/home',
+        home: const HomePage(),
+
+        /* initialRoute: '/home',
         routes: {
-          '/': (context) => const HomePage(), //Ana sayfa için rota
-          '/favorite-page': (context) =>
-              const FavoritePage(), //favori sayfası için rota
-        },
+          '/home': (context) => const HomePage(), //Ana sayfa için rota
+          '/detail-page': (context) {
+            // Use ModalRoute to extract arguments
+            final args = ModalRoute.of(context)!.settings.arguments
+                as Map<String, dynamic>;
+            final bookId = args['bookId'] as int;
+
+            return DetailPage(bookId: bookId);
+          },
+        }, */
       ),
     );
   }

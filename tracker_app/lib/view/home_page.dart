@@ -40,22 +40,20 @@ class _HomePageState extends State<HomePage> {
         ),
         body: Column(
           children: [
-            const AppBar(),
+            const MyAppBar(),
             Expanded(
-                child: BooksCardsWidget(
-                    books: result,
-                    onFavoriteChanged: (Book book, bool isFavorite) {
-                      // Favori durumu değişikliğini burada işleyin
-                      // Veri kaynağını (örneğin, veritabanını) güncellemek isteyebilirsiniz
-                      setState(() {
-                        // Kitabın listeye olan index'ini bulun
-                        int index = result.indexWhere((b) => b.id == book.id);
-                        if (index != -1) {
-                          // isFavorite durumunu güncelleyin
-                          result[index].isFavorite = isFavorite;
-                        }
-                      });
-                    }))
+              child: BooksCardsWidget(
+                books: result,
+                onFavoriteChanged: (Book book, bool isFavorite) {
+                  setState(() {
+                    int index = result.indexWhere((b) => b.id == book.id);
+                    if (index != -1) {
+                      result[index].isFavorite = isFavorite;
+                    }
+                  });
+                },
+              ),
+            )
           ],
         ),
       ),
@@ -63,8 +61,8 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class AppBar extends StatelessWidget {
-  const AppBar({Key? key}) : super(key: key);
+class MyAppBar extends StatelessWidget {
+  const MyAppBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +76,7 @@ class AppBar extends StatelessWidget {
           bottomRight: Radius.circular(20),
         ),
         gradient: LinearGradient(
-          colors: [Color.fromARGB(255, 241, 74, 14), AppColors.kPrimaryLight],
+          colors: [Color.fromARGB(255, 255, 68, 0), AppColors.kPrimaryLight],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -93,7 +91,7 @@ class AppBar extends StatelessWidget {
                 Text(
                   "Book Tracker",
                   style: Theme.of(context).textTheme.bodyMedium,
-                )
+                ),
               ],
             )
           ],
@@ -112,14 +110,9 @@ class BooksCardsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 20, bottom: 0, right: 20, top: 0),
-      child: GridView.builder(
-        padding: const EdgeInsets.all(30),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 1,
-          mainAxisSpacing: 1,
-          crossAxisSpacing: 4,
-        ),
+      padding: const EdgeInsets.only(left: 5, right: 40, top: 20),
+      child: ListView.builder(
+        padding: const EdgeInsets.only(left: 50, right: 60, top: 20),
         itemCount: books.length,
         itemBuilder: (BuildContext context, int index) {
           return BooksCards(
